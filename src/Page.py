@@ -62,4 +62,4 @@ class SimpleWebpage:
         return f"SimpleWebpage(url={self.url}, title={self.title}, date={self.date.strftime('%Y-%m-%d')}, status={self.status}, text={self.text[:25] if self.text else ''}...)"
 
     def __repr__(self):
-        return f"SimpleWebpage(url={self.url}, title={self.title}, date={self.date.strftime('%Y-%m-%d')}, status={self.status}, text={self.text[:25]if self.text else ''}...)"
+        return f"SimpleWebpage(url={self.url}, title={self.title}, date={self.date.strftime('%Y-%m-%d') if self.date else ''}, status={self.status}, text={self.text[:25]if self.text else ''}...)"
