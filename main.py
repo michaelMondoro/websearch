@@ -1,7 +1,7 @@
-from search import *
+from Search import *
 
 engine = SearchEngine()
-engine.search("va gov elections", 3, 'd')
+engine.search("hello world", 3)
 
-print(engine.results[0].text)
+
 print(engine)

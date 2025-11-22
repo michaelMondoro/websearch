@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 import requests 
-from page import * 
+from Page import * 
 import logging
 from datetime import datetime
 
@@ -23,6 +23,16 @@ class SearchEngine:
         self.logger = logging.getLogger(self.__class__.__name__)
         self.logger.disabled = not logs
 
+    def _parse_result(self, result:str) -> tuple[str, str]:
+        a_tag = result.find("a", class_="result__a")
+        href = a_tag.get("href")
+        self.logger.info(f"Processing web result: {href}")
+        extras = result.find("div", class_="result__extras__url")
+        date_span = extras.find("span", class_=lambda c: not c)
+        date =  datetime.fromisoformat(date_span.text.strip().split(".")[0]) if date_span is not None else None
+
+        return (href, date)
+    
     def search(self, query:str, count:int=10, timeframe:str=''):
         params = {
             'q': query,
@@ -36,13 +46,7 @@ class SearchEngine:
         
         for i, result in enumerate(soup.select(".result")):
             if i == count: break
-            a_tag = result.find("a", class_="result__a")
-            href = a_tag.get("href")
-            self.logger.info(f"Processing web result: {href}")
-            extras = result.find("div", class_="result__extras__url")
-            date_span = extras.find("span", class_=lambda c: not c)
-            date =  datetime.fromisoformat(date_span.text.strip().split(".")[0]) if date_span is not None else None
-
+            href, date = self._parse_result(result)
             self.results.append(SimpleWebpage(href, date))
 
         return self.results
